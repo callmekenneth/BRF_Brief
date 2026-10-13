@@ -53,6 +53,14 @@ Hjälp styrelseordföranden att få en kort, handlingsorienterad lägesbild. Den
 - **Prioritera framför uppräkning:** Visa högst fem fokusärenden med innehåll och länkar; övriga öppna ärenden kan sammanfattas per tema. Långa kompletta förteckningar görs bara när användaren uttryckligen ber om dem.
 - Kontrollera före leverans: (1) inga städråd på basis av `complete`; (2) klickbara, verifierade kortlänkar eller explicit avsaknad; (3) faktiskt lästa kortdetaljer eller tydlig redovisning av begränsningen.
 
+## Förändringsspårning (under införande)
+- Förändringar får **bara** påstås om två strukturerade, kompletta Trello-exporter faktiskt jämförts med `scripts/trello_changes.py`. Jämför inte enbart löptext från två briefingrapporter.
+- Skapa aldrig en påhittad tidigare baslinje. Om lokal snapshot saknas, skriv `Första körningen – baslinje saknas`.
+- Verktyget jämför kort-ID, list-ID, ansvariga, förfallodatum och kommentars-ID. För kommentarer krävs komplett historik i båda exporter, annars får nya kommentarer inte påstås med stöd av differensen.
+- Den automatiska exporten från Trello MCP till lokal snapshot är **ännu inte implementerad**. Behandla därför förändringsrapport som otillgänglig tills en faktisk komplett JSON-export och lyckad jämförelse har verifierats.
+- Vid fungerande differens: börja rapporten med `Vad har hänt sedan förra briefingen?`, länka till Trello-korten och tolka styrelsens gemensamma listflytt som en verifierad ändring av tavlan – inte säkert bevis för när arbetet utfördes.
+- Varken snapshot eller rapport med personuppgifter får publiceras i projektets öppna GitHub-repository.
+
 ## Rapportformat
 # BRF Brief – [datum]
 **Period:** [granskad period]  
