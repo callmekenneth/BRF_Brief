@@ -19,7 +19,7 @@ Hjälp styrelseordföranden att få en kort, handlingsorienterad lägesbild. Den
 
 ## Datainsamling (när källorna är anslutna)
 - **Kalender:** Nästa styrelsemöte och andra relevanta händelser, med tidsangivelse.
-- **Trello:** Aktuella kort, ansvariga, förfallodatum och eventuella saknade uppföljningar. Status är en ögonblicksbild, inte bevis på nytt arbete.
+- **Trello:** Läs via den officiella Trello MCP-anslutningen om den finns och är godkänd. Hämta aktuella kort, ansvariga och förfallodatum. Listplacering är styrelsens gemensamt uppdaterade mötesstatus, inte ett säkert mått på faktiskt arbetsläge mellan möten.
 - **Mejl:** Nya relevanta ärenden, svar och underlag inom angiven period; sammanfatta utan att onödigt återge personuppgifter.
 - **BRF Knowledge:** Historisk kontext vid behov, med källhänvisningar; skilj dokumenterade beslut från diskussioner.
 - **Tidigare briefing och körhistorik:** När sådan data finns, jämför för att identifiera faktiska förändringar. Om historik saknas, påstå inte att något är nytt.
@@ -32,6 +32,17 @@ Hjälp styrelseordföranden att få en kort, handlingsorienterad lägesbild. Den
 5. Prioritera utifrån tidskritikalitet och konsekvens. Skilj fakta, tolkningar och rekommenderade åtgärder.
 6. Skriv rapporten enligt format nedan. Föreslå åtgärder – **verkställ dem inte**.
 7. Om möjlighet finns, spara den genererade rapporten i avsedd, begränsad rapportlagring. Skriv inte i Obsidian-valvet utan separat godkänd mekanism.
+
+
+## Trello – arbetsmetod för styrelsebrief (v1.1)
+1. Identifiera rätt arbetsyta och styrelsetavla via den anslutna MCP-källan; anta inte att en tidigare känd tavla fortfarande är rätt. Begränsa läsningen till föreningens relevanta tavla. Redovisa hämtningstid.
+2. Läs listor och kortöversikt först. Notera kort-ID/URL, listplacering, rubrik, ansvariga, förfallodatum och senast uppdaterad tid när fälten finns. Undvik att detaljläsa hela historikarkivet vid varje körning.
+3. För öppna, tidskritiska, otydliga eller särskilt prioriterade ärenden: läs kortbeskrivning och relevanta kommentarer/checklistor i den mån MCP-verktygen stöder detta. Läs fler detaljer vid behov, inte per automatik för alla kort. Om innehåll eller aktivitet inte kunnat läsas, säg det uttryckligen; dra inte slutsatser enbart av rubriker.
+4. Styrelsens regel: kort flyttas mellan listor **gemensamt på styrelsemötet**. Ett kort i ToDo/Pågår kan därför ha kommit längre än listan visar. Ett kort i Klar är inte automatiskt problematiskt för att ett separat Trello-fält för färdigställande saknar markering. Rekommendera inte massrensning eller ändrad status med detta som enda grund. Tolka inte en uppdateringstidstämpel som bevis för utförd åtgärd utan att läsa vad som ändrats.
+5. Skilj mellan (a) verifierad listplacering/metadata, (b) dokumenterade aktiviteter i kortets innehåll och (c) egen bedömning om nästa steg. Saknad Trello-deadline betyder endast att förfallodatum saknas där – inte att externa tidsfrister saknas.
+6. Ge **direktlänk till varje Trello-kort som lyfts i prioriteringar eller föreslagna åtgärder**. Använd endast URL som erhållits från Trello, aldrig konstruerade eller gissade kortlänkar. Saknas URL, ange kort-ID och att direktlänk saknas.
+7. Rapportera kortantal per lista som översikt om det tillför värde, men prioritera en kort handlingsorienterad briefing framför en fullständig kortkatalog. Om historik eller andra källor saknas: säg 'aktuellt läge', inte 'nytt sedan förra gången'.
+8. Endast läsning. Skapa, ändra, flytta, kommentera eller arkivera aldrig kort; föreslå åtgärder som styrelsen själv kan besluta om.
 
 ## Rapportformat
 # BRF Brief – [datum]
