@@ -61,6 +61,19 @@ Hjälp styrelseordföranden att få en kort, handlingsorienterad lägesbild. Den
 - Vid fungerande differens: börja rapporten med `Vad har hänt sedan förra briefingen?`, länka till Trello-korten och tolka styrelsens gemensamma listflytt som en verifierad ändring av tavlan – inte säkert bevis för när arbetet utfördes.
 - Varken snapshot eller rapport med personuppgifter får publiceras i projektets öppna GitHub-repository.
 
+## Snabb Trello-export efter etablerad baslinje (v1.2)
+Målet är en snabb, källtroget strukturerad förändringskontroll – inte att språkmodellen ska detaljläsa 220 kort vid varje körning.
+
+1. Läs `/workspace/brf-brief/docs/TRELLO_CHANGE_TRACKING.md` om den finns. Den lokala baslinjen på Spark hanteras av `scripts/trello_changes.py`; **förväxla inte** `/workspace/brf-brief/trello/current.json` (ny indata) med skriptets `~/.local/share/brf-brief/trello/latest.json` (föregående referensläge). De ligger också i olika körmiljöer.
+2. Hämta först **endast en komplett kortöversikt för hela tavlan** via Trello MCP, gärna med `trelloReadCard`/list_by_board om den ger alla kort och hanterar paginering. Hämta kort-ID, rubrik, list-ID/listnamn, direktlänk, medlems-ID och deadline; hämta INTE ett separat fullständigt kortanrop för varje arkivkort.
+3. Inkludera alla fyra listorna (`ToDo`, `Pågår`, `Klar`, `Bordlagda`) i **metadataexporten** för att upptäcka återaktiverade kort. Fördjupa bara de för tillfället aktiva korten (`ToDo` och `Pågår`) samt kort vars metadata har ändrats jämfört med baslinjen och som behöver förstås. Avslutade kort används som historik/kunskapskälla **på begäran**, inte som uppgifter i den löpande briefingen.
+4. `complete_board: true` kräver verifierad komplett paginering, unika kort-ID:n och kontrollerade antal per lista. Om detta inte kan verifieras, lämna `complete_board: false` och **uppdatera inte baslinjen**. Det historiska totalantalet 220 är inte ett evigt förväntat värde – antal får förändras.
+5. Kommentarhistorik: för kort där **alla** kommentar-ID:n verkligen kan hämtas får `comments_complete: true` och `comment_ids` sättas. Vid partiell historik, fel som `MEMBER_NOT_FOUND` eller när detaljläsning hoppas över: `comments_complete: false`, utan antagna ID:n. Nya kommentarer kan bara detekteras av jämförelseskriptet när både gammal och ny snapshot har fullständiga kommentar-ID:n. **Avsaknad av kommentar-diff betyder alltså inte att inga kommentarer tillkommit.**
+6. Skriv en validerad JSON till `/workspace/brf-brief/trello/current.json` atomärt med temporär fil **i samma filsystem**. Spara inte kommentarstexter, tokens eller hemligheter där. Konstruera aldrig saknade URL:er.
+7. På värden: kör först `python3 scripts/trello_changes.py --preview <snapshot>`. Kontrollera förändringarna. Kör därefter samma kommando **utan** `--preview` för att flytta fram baslinjen, och bara om snapshot är fullständig och validerad. En halvfärdig eller misstänkt export får inte ersätta referensläget.
+8. Vid första införandet: använd existerande baslinje från 2026-10-13; skapa den **inte på nytt**. Ange tydligt om rapporten bygger på verklig snapshot-diff eller bara på dagsläget. Automatisk, obevakad MCP-export är ännu inte implementerad; instruktionerna gäller manuellt styrd Hermes-export.
+9. Optimera inte med stora agentkedjor eller fullständiga historikanrop: en snabb översikt + selektiv detaljerad läsning räcker tills verkliga körningar visar något annat.
+
 ## Rapportformat
 # BRF Brief – [datum]
 **Period:** [granskad period]  
