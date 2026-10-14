@@ -12,6 +12,8 @@ A snapshot JSON object has:
 
 Use `comments_complete: true` **only** when the full comment ID history is known for the card, not when an API returns just its newest three comments. Otherwise changes in comments will not be reported. This prevents false discoveries.
 
+**Important: per-snapshot freshness.** Comment IDs must be fetched anew in the current run for every card whose comments are being monitored (initially ToDo and Pågår). Unchanged card metadata does **not** prove that no comment has been added. Never copy comment IDs from the previous snapshot while keeping `comments_complete: true`. For cards not refreshed this run, set `comments_complete: false` and omit `comment_ids` even if a previous snapshot had complete comments. A full-board metadata snapshot may still be `complete_board: true`. When historical author deletion causes `MEMBER_NOT_FOUND`, report the monitoring gap, do not invent or reuse comments. After an incomplete run, the next successful full history can establish a new reference point for that card; changes during the gap cannot be reliably attributed from the diff.
+
 Example **fictional** (never commit real board exports):
 
 ```json
