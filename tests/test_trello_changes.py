@@ -22,7 +22,7 @@ class TrelloChangesTests(unittest.TestCase):
             p.write_text(json.dumps(before))
             q.write_text(json.dumps(after))
             kinds = {c["kind"] for c in compare(p, q)["changes"]}
-            self.assertEqual(kinds, {"new_card", "moved", "members_changed", "new_comments"})
+            self.assertEqual(kinds, {"new_card", "moved", "members_changed", "comment_ids_newly_observed"})
 
     def test_incomplete_comment_history_not_called_new(self):
         a = {"board_id": "b", "cards": [
@@ -36,6 +36,28 @@ class TrelloChangesTests(unittest.TestCase):
             p.write_text(json.dumps(a))
             q.write_text(json.dumps(b))
             self.assertEqual(compare(p, q)["changes"], [])
+
+    def test_removed_id_is_not_claimed_deleted(self):
+        before = {"board_id": "b", "cards": [{"id": "1", "name": "Instabox", "list_id": "todo", "comments_complete": True, "comment_ids": ["old"]}]}
+        after = {"board_id": "b", "cards": [{"id": "1", "name": "Instabox", "list_id": "todo", "comments_complete": True, "comment_ids": []}]}
+        with tempfile.TemporaryDirectory() as directory:
+            p, q = Path(directory) / "old.json", Path(directory) / "new.json"
+            p.write_text(json.dumps(before))
+            q.write_text(json.dumps(after))
+            diff = compare(p, q)["changes"]
+            self.assertEqual(diff[0]["kind"], "comment_ids_missing")
+            self.assertTrue(diff[0]["deletion_unverified"])
+
+    def test_observed_id_requires_timestamp_check(self):
+        before = {"board_id": "b", "cards": [{"id": "1", "name": "Garage", "list_id": "doing", "comments_complete": True, "comment_ids": []}]}
+        after = {"board_id": "b", "cards": [{"id": "1", "name": "Garage", "list_id": "doing", "comments_complete": True, "comment_ids": ["prior-post"]}]}
+        with tempfile.TemporaryDirectory() as directory:
+            p, q = Path(directory) / "old.json", Path(directory) / "new.json"
+            p.write_text(json.dumps(before))
+            q.write_text(json.dumps(after))
+            diff = compare(p, q)["changes"]
+            self.assertEqual(diff[0]["kind"], "comment_ids_newly_observed")
+            self.assertTrue(diff[0]["requires_timestamp_verification"])
 
     def test_reject_duplicate(self):
         with tempfile.TemporaryDirectory() as directory:
