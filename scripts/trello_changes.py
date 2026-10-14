@@ -50,8 +50,13 @@ def compare(before, after):
             changes.append({**base, "kind": "due_changed", "from": old.get("due"), "to": new.get("due")})
         if old.get("comments_complete") is True and new.get("comments_complete") is True:
             added = sorted(set(new.get("comment_ids", [])) - set(old.get("comment_ids", [])))
+            removed = sorted(set(old.get("comment_ids", [])) - set(new.get("comment_ids", [])))
             if added:
-                changes.append({**base, "kind": "new_comments", "count": len(added), "comment_ids": added})
+                changes.append({**base, "kind": "comment_ids_newly_observed", "count": len(added),
+                                "comment_ids": added, "requires_timestamp_verification": True})
+            if removed:
+                changes.append({**base, "kind": "comment_ids_missing", "count": len(removed),
+                                "comment_ids": removed, "deletion_unverified": True})
     return {"board_id": curr["board_id"], "previous_capture": prev.get("captured_at"),
             "current_capture": curr.get("captured_at"), "changes": changes}
 
