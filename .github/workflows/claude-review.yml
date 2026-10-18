@@ -1,0 +1,94 @@
+name: Claude-granskning
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  issue_comment:
+    types: [created]
+
+# Publikt repo: bara ägarens PR:er och kommentarer startar Claude.
+# Bara körningar som faktiskt granskar delar grupp per PR. Övriga kommentarer får
+# en egen grupp (run_id) så att de inte avbryter en pågående granskning.
+concurrency:
+  group: "claude-review-${{ (github.event_name == 'pull_request' || (github.event.issue.pull_request && startsWith(github.event.comment.body, '@claude granska'))) && format('pr-{0}', github.event.pull_request.number || github.event.issue.number) || github.run_id }}"
+  cancel-in-progress: true
+
+jobs:
+  review:
+    # Automatiskt på PR:er, eller manuellt med kommentaren "@claude granska" på en PR.
+    if: >
+      (github.event_name == 'pull_request' && !github.event.pull_request.draft &&
+       github.event.pull_request.user.login == github.repository_owner) ||
+      (github.event_name == 'issue_comment' && github.event.issue.pull_request &&
+       github.event.comment.user.login == github.repository_owner &&
+       startsWith(github.event.comment.body, '@claude granska'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: read
+      id-token: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Checka ut PR-grenen
+        run: gh pr checkout "$PR_NUMBER"
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Granska PR #${{ env.PR_NUMBER }} i ${{ github.repository }} enligt avsnittet
+            "När du granskar en PR" i CLAUDE.md, AGENTS.md och docs/ROADMAP.md.
+            Läs PR-beskrivningen med `gh pr view`, diffen med `gh pr diff` och den
+            omgivande koden i arbetskatalogen. Testerna körs av workflowen "Tester";
+            kontrollera dess status med `gh pr checks` och kör dem inte själv.
+            Är testjobbet inte klart, skriv det i granskningen i stället för att vänta.
+            Posta granskningen som en enda kommentar med `gh pr comment`.
+          claude_args: |
+            --max-turns 40
+            --allowedTools "Read,Glob,Grep,Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(git log:*),Bash(git diff:*),Bash(gh pr checks:*)"
+
+  discuss:
+    # Svar när någon skriver @claude i en PR-kommentar (utom "@claude granska").
+    if: >
+      github.event_name == 'issue_comment' && github.event.issue.pull_request &&
+      github.event.comment.user.login == github.repository_owner &&
+      contains(github.event.comment.body, '@claude') &&
+      !startsWith(github.event.comment.body, '@claude granska')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: read
+      id-token: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR_NUMBER: ${{ github.event.issue.number }}
+      COMMENT_ID: ${{ github.event.comment.id }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Checka ut PR-grenen
+        run: gh pr checkout "$PR_NUMBER"
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Du har blivit nämnd i kommentar ${{ env.COMMENT_ID }} på PR #${{ env.PR_NUMBER }}
+            i ${{ github.repository }}. Följ avsnittet "När du svarar i en diskussion" i CLAUDE.md.
+            Läs hela tråden med `gh pr view --comments` och diffen med `gh pr diff`.
+            Svara med en enda kommentar via `gh pr comment`.
+          claude_args: |
+            --max-turns 25
+            --allowedTools "Read,Glob,Grep,Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(git log:*),Bash(git diff:*),Bash(gh pr checks:*)"

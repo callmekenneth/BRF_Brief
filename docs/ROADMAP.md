@@ -1,11 +1,29 @@
 # BRF Brief roadmap
 
-1. Define the current briefing SOP and output format.
-2. Implement a Hermes skill for a local manual run.
-3. Integrate read-only email, calendar and Trello sources.
-4. Use BRF Knowledge API for relevant historical context.
-5. Evaluate accuracy against the existing briefing.
-6. Persist run history, schedule jobs and add proactive meeting preparation.
-7. Require approval before outreach or changes to external systems.
+Kennet prioriterar. Agenter tar översta öppna punkten om inget annat sägs och uppdaterar
+denna fil i samma PR som punkten blir klar.
 
-The BRF Knowledge repo: https://github.com/callmekenneth/Brf_Knowledge
+Status: **Klar** (driftsatt och verifierad), **Mergad** (i main, ej driftsatt), **Öppen**.
+
+## Nu
+
+| # | Uppgift | Status |
+|---|---------|--------|
+| 1 | Beskriv dagens briefing som SOP och utdataformat. | Öppen |
+| 2 | Hermes-skill för en lokal, manuell körning. | Öppen |
+| 3 | Läsande integration av mejl, kalender och Trello. | Öppen |
+
+## Sedan
+
+| # | Uppgift | Status |
+|---|---------|--------|
+| 4 | Historisk kontext via BRF Knowledge API. | Öppen |
+| 5 | Utvärdera träffsäkerhet mot befintlig briefing. | Öppen |
+| 6 | Körhistorik, schemalagda körningar och proaktiv mötesförberedelse. | Öppen |
+| 7 | Godkännande krävs före utskick och ändringar i externa system. | Öppen |
+
+BRF Knowledge: https://github.com/callmekenneth/Brf_Knowledge
+
+## Klart
+
+- Agentregler, automatisk granskning och PR-diskussion (som i Sparky-OPS).
